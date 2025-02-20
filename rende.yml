@@ -1,0 +1,12 @@
+services:
+  - name: backend-java
+    type: web
+    runtime: docker
+    repo: https://github.com/tu_usuario/tu_repositorio
+    plan: free
+    region: oregon
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+    buildCommand: ./mvnw clean package
+    startCommand: docker build -t backend-java . && docker run -p 8080:8080 backend-java
