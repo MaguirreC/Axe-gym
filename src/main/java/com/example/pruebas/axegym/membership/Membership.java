@@ -18,7 +18,7 @@ public class Membership {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "client_id")
+    @JoinColumn(name = "client_id",nullable = true)
     @JsonBackReference
     private Client client;
 

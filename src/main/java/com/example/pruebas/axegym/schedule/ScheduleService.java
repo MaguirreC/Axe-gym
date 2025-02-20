@@ -1,6 +1,5 @@
 package com.example.pruebas.axegym.schedule;
 
-import com.example.pruebas.axegym.client.Client;
 import com.example.pruebas.axegym.trainer.Trainer;
 import com.example.pruebas.axegym.trainer.TrainerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +7,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ScheduleService {
@@ -29,9 +32,12 @@ public class ScheduleService {
         return scheduleRepository.save(schedule);
 
     }
-    public Page<Schedule> getSchedules(int page, int size){
+    public Page<DtoResponseSchedule> getSchedules(int page, int size){
         Pageable pageable = PageRequest.of(page, size);
-        return scheduleRepository.findAll(pageable);
+
+        return scheduleRepository.findAll(pageable).map(schedule-> new DtoResponseSchedule(
+                schedule.getLocalDate(),schedule.getShift(),schedule.getTrainer().getName()
+        ));
     }
 
     public void deleteScheduleById(Long id){
@@ -39,5 +45,19 @@ public class ScheduleService {
             throw new RuntimeException("schedule with ID "+ id + "not found");
         }
         scheduleRepository.deleteById(id);
+    }
+
+    public List<DtoResponseSchedule> getSchedulesByDate(LocalDate localDate){
+
+        List<Schedule> schedules = scheduleRepository.findByLocalDate(localDate);
+        return schedules.stream().map(schedule -> new DtoResponseSchedule(schedule.getLocalDate()
+        ,schedule.getShift(),schedule.getTrainer().getName())).collect(Collectors.toList());
+    }
+
+    public List<DtoResponseSchedule> getSchedulesByTrainer(Long id){
+        List<Schedule> schedules = scheduleRepository.findByTrainerId(id);
+        return schedules.stream().map(schedule -> new DtoResponseSchedule(
+                schedule.getLocalDate(),schedule.getShift(),schedule.getTrainer().getName()
+        )).collect(Collectors.toList());
     }
 }

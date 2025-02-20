@@ -4,6 +4,7 @@ import com.example.pruebas.axegym.schedule.Schedule;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -16,6 +17,11 @@ public class Trainer {
     private String name;
 
     private String identification;
+
+    private String phoneNumber;
+
+    private LocalDate dateOfBirth;
+
 
     @OneToMany(mappedBy = "trainer",cascade = CascadeType.ALL,orphanRemoval = true)
     @JsonManagedReference
@@ -43,6 +49,22 @@ public class Trainer {
 
     public void setIdentification(String identification) {
         this.identification = identification;
+    }
+
+    public LocalDate getDateOfBirth() {
+        return dateOfBirth;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public void setDateOfBirth(LocalDate dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
     }
 
     public List<Schedule> getSchedules() {

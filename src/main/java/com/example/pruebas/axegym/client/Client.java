@@ -2,6 +2,8 @@ package com.example.pruebas.axegym.client;
 
 import com.example.pruebas.axegym.attendance.Attendance;
 import com.example.pruebas.axegym.membership.Membership;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -14,8 +16,6 @@ import java.util.List;
 
 @Entity
 public class Client {
-
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,24 +28,30 @@ public class Client {
 
     private LocalDate dateOfBirth;
 
-    @ManyToOne
-    @JoinColumn(name = "membership_id",nullable = true)
-    private Membership membership;
+    @OneToMany(mappedBy = "client",cascade = CascadeType.ALL,orphanRemoval = true)
+    @JsonManagedReference
+    private List<Membership> memberships;
 
-    @OneToMany(mappedBy = "client")
+    @OneToMany(mappedBy = "client",cascade = CascadeType.ALL,orphanRemoval = true)
+    @JsonBackReference
     private List<Attendance> attendances;
 
-
+    public void removeMembership(Membership membership) {
+        if (memberships.contains(membership)){
+            memberships.remove(membership);
+            membership.setClient(null);
+        }
+    }
     public Long getId() {
         return id;
     }
 
-    public Membership getMembership() {
-        return membership;
+    public List<Membership> getMemberships() {
+        return memberships;
     }
 
-    public void setMembership(Membership membership) {
-        this.membership = membership;
+    public void setMemberships(List<Membership> memberships) {
+        this.memberships = memberships;
     }
 
     public void setId(Long id) {

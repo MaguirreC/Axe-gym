@@ -15,8 +15,8 @@ public class ClientController {
     ClientService clientService;
 
     @PostMapping
-    public ResponseEntity<Client> newClient(@RequestBody Client client){
-            return ResponseEntity.ok(clientService.registerClient(client));
+    public ResponseEntity<Client> newClient(@RequestBody ClientDto clientDto){
+            return ResponseEntity.ok(clientService.registerClient(clientDto));
 
     }
 
@@ -33,5 +33,17 @@ public class ClientController {
         }catch (RuntimeException e){
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
+    }
+
+    @PutMapping("/edit/{id}")
+    public ResponseEntity<Client> updateClient(@PathVariable Long id,@RequestBody RequestUpdateClient request){
+        Client updatedClient = clientService.updateClient(id,request);
+        return ResponseEntity.ok(updatedClient);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<Client> searchClient(@RequestParam String identification){
+        Client client = clientService.getClientByIdentification(identification);
+        return ResponseEntity.ok(client);
     }
 }
