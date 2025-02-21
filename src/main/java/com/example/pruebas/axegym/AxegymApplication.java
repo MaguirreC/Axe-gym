@@ -14,14 +14,4 @@ public class AxegymApplication {
 		SpringApplication.run(AxegymApplication.class, args);
 	}
 
-	@Autowired
-	private PasswordEncoder passwordEncoder;
-
-
-	@Bean
-	public CommandLineRunner createPasswords(){
-		return args -> {
-			System.out.println(passwordEncoder.encode("mahomes15"));
-		};
-	}
 }
